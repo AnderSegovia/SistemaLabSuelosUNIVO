@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Equipo{% endblock %}
+
+{% block body %}
+<div class="container" style="margin-bottom: 100px;">
+    <h2>Editar Equipo</h2>
+
+    <form action="" method="post">
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="atencion">Atención:</label>
+            <input type="text" class="form-control" id="atencion" name="atencion" value="{{ equipo.atencion }}" required>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="cargo">Cargo:</label>
+            <input type="text" class="form-control" id="cargo" name="cargo" value="{{ equipo.cargo }}" required>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="contacto">Contacto:</label>
+            <input type="text" class="form-control" id="contacto" name="contacto" value="{{ equipo.contacto }}" required>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="dias_alquiler">Días de Alquiler:</label>
+            <input type="number" class="form-control" id="dias_alquiler" name="dias_alquiler" value="{{ equipo.diasAlquiler }}" required>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="fecha_salida">Fecha de Salida:</label>
+            <input type="date" class="form-control" id="fecha_salida" name="fecha_salida" value="{{ equipo.fechaSalida|date('Y-m-d') }}" required>
+        </div>
+    </div>
+    {% if equipo.fechaRecepcion is not empty %}
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fecha_recepcion">Fecha de Recepción:</label>
+                <input type="date" class="form-control" id="fecha_recepcion" name="fecha_recepcion" value="{{ equipo.fechaRecepcion|date('Y-m-d') }}">
+            </div>
+        </div>
+    {% endif %}
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="observaciones">Observaciones:</label>
+            <textarea class="form-control" id="observaciones" name="observaciones">{{ equipo.observaciones }}</textarea>
+        </div>
+    </div>
+</div>
+
+
+    <hr>
+
+    <h3>Moldes</h3>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>#</th>
+            <th>Nombre del Molde</th>
+            <th>Cantidad</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for detalle in moldes |reverse %}
+                <tr>
+                    <td>{{ loop.index}}</td>
+                    <td>
+                        <select class="form-control" name="molde[]">
+                            {% for molde in mold %}
+                                <option value="{{ molde.idMolde }}" {% if molde.idMolde == detalle.fkMolde.idMolde %} selected {% endif %}>{{molde.cantidadMolde}} ---> {{ molde.nombreMolde }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="cantidad[]" value="{{ detalle.cantidadEquipo }}" max="{{ detalle.fkMolde.cantidadMolde + detalle.cantidadEquipo}}" min="0">
+                    </td>
+                    <td>
+                        <a href="" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </form>
+</div>
+{% endblock %}

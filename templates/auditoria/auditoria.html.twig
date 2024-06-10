@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Auditoria{% endblock %}
+
+{% block body %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<div id="#" style="margin-bottom: 100px;">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Auditoria</h1>
+        <div>
+            <input id="myInput" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
+
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Archivo Nuevo</th>
+                    <th>Archivo Antiguo</th>
+                    <th>Usuario</th>
+
+                </tr>
+            </thead>
+            <tbody id="miTabla">
+                {% for aud in auditoria |reverse %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ aud.fecha|date('Y-m-d H:i:s') }}</td>
+                    <td>{{ aud.tipo }}</td>
+
+                       <td> <a class="" href="{{ path('descargarTodosArchivos', { 'id': aud.archivoNuevo }) }}">{{ aud.archivoNuevo }} </a>
+
+                    </td>
+                    
+
+                    <td>
+                    {% if aud.archivoAntiguo != null %}
+                      <a class="" href="{{ path('descargarTodosArchivos', { 'id': aud.archivoAntiguo }) }}">{{ aud.archivoAntiguo }} </a>
+                    {% else %}
+                    Sin Archivo Antiguo
+                    {% endif %}
+                    </td>
+
+                    <td>{{ aud.fkUsuario.nombreUsuario }}</td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#miTabla tr").each(function() {
+      var text = $(this).text().toLowerCase();
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script> 
+  
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Agregar Muestra{% endblock %}
+
+{% block body %}
+    {% block styles %}
+        <link rel="stylesheet" href="{{ asset('assets/css/stylesForm.css') }}">
+    {% endblock %}
+
+    <h1>Agregar Muestra</h1>
+
+    <div class="form-container">
+        <form id="formulario" action="{{ path('addMuestra') }}" method="post">
+            <div class="form-group">
+                <label for="atencion">Atención:</label>
+                <input type="text" id="atencion" name="atencion" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cargo">Cargo:</label>
+                <input type="text" id="cargo" name="cargo" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contacto">Contacto:</label>
+                <input type="text" id="contacto" name="contacto" required maxlength="9" inputmode="numeric" oninput="formatoTelefono(this)">
+            </div>
+
+            <div id="muestras-container"></div>
+
+            <div class="form-group">
+                <label for="contacto">Observaciones:</label>
+                <input type="text" id="observaciones" name="observaciones" required>
+            </div>
+        <div class="form-group">
+            <label for="fecha_creado">Fecha de Creación:</label>
+            <input type="datetime-local" class="form-control" id="fecha_creado" name="fecha_creado" required readonly>
+        </div>
+            <!-- <button type="button" onclick="agregarMuestra()" class="btn btn-secondary">Agregar Muestra</button><br><br>  -->
+
+            <input type="hidden" id="fk_proyecto" name="fk_proyecto" value="{{ idProyecto }}">
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+    </div>
+
+    {% block javascripts %}
+<script>
+ var tipoMuestra = [
+        {% for muestra in tipoMuestra %}
+            {
+                idTipoMuestra: {{ muestra.idTipoMuestra }},
+                nombreTipoMuestra: "{{ muestra.nombreTipoMuestra }}"
+            },
+            {% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    var opcionesEnsayo = [
+        {% for ensayo in ensayo %}
+            {
+                idEnsayo: {{ ensayo.idEnsayo }},
+                nombreEnsayo: "{{ ensayo.nombreEnsayo }}"
+            },
+            {% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    function agregarMuestra() {
+        let contador = document.querySelectorAll('.muestra-container').length + 1;
+
+        let muestraContainer = document.createElement('div');
+        muestraContainer.classList.add('muestra-container');
+        muestraContainer.classList.add('form-group');
+
+        let labelTipoMuestra = document.createElement('label');
+        labelTipoMuestra.textContent = 'Tipo Muestra ' + contador + ':';
+
+        let selectTipoMuestra = document.createElement('select');
+        selectTipoMuestra.classList.add('form-control');
+        selectTipoMuestra.name = 'tipo_muestra_' + contador;
+        selectTipoMuestra.required = true;
+
+        let optionDefaultTipoMuestra = document.createElement('option');
+        optionDefaultTipoMuestra.value = '';
+        optionDefaultTipoMuestra.textContent = '-- Seleccione un Tipo de Muestra --';
+        optionDefaultTipoMuestra.disabled = true;
+        optionDefaultTipoMuestra.selected = true;
+        selectTipoMuestra.appendChild(optionDefaultTipoMuestra);
+
+        tipoMuestra.forEach(function(tipoMuestra) {
+            let option = document.createElement('option');
+            option.value = tipoMuestra.idTipoMuestra;
+            option.textContent = tipoMuestra.nombreTipoMuestra;
+            selectTipoMuestra.appendChild(option);
+        });
+
+        let labelEnsayo = document.createElement('label');
+        labelEnsayo.textContent = 'Ensayo Muestra ' + contador + ':';
+
+        let selectEnsayo = document.createElement('select');
+        selectEnsayo.classList.add('form-control');
+        selectEnsayo.name = 'ensayo_muestra_' + contador;
+        selectEnsayo.required = true;
+
+        let optionDefaultEnsayo = document.createElement('option');
+        optionDefaultEnsayo.value = '';
+        optionDefaultEnsayo.textContent = '-- Seleccione un Ensayo --';
+        optionDefaultEnsayo.disabled = true;
+        optionDefaultEnsayo.selected = true;
+        selectEnsayo.appendChild(optionDefaultEnsayo);
+
+        opcionesEnsayo.forEach(function(opcionEnsayo) {
+            let optionEnsayo = document.createElement('option');
+            optionEnsayo.value = opcionEnsayo.idEnsayo;
+            optionEnsayo.textContent = opcionEnsayo.nombreEnsayo;
+            selectEnsayo.appendChild(optionEnsayo);
+        });
+
+        let labelCantidadMuestra = document.createElement('label');
+        labelCantidadMuestra.textContent = 'Cantidad Muestra ' + contador + ':';
+
+        let inputCantidadMuestra = document.createElement('input');
+        inputCantidadMuestra.type = 'number';
+        inputCantidadMuestra.classList.add('form-control');
+        inputCantidadMuestra.name = 'cantidad_muestra_' + contador;
+        inputCantidadMuestra.required = true;
+        inputCantidadMuestra.min = '1'; 
+
+let labelFechaElaboracion = document.createElement('label');
+labelFechaElaboracion.textContent = 'Fecha Elaboración Muestra ' + contador + ':';
+
+let inputFechaElaboracion = document.createElement('input');
+inputFechaElaboracion.type = 'date';
+inputFechaElaboracion.classList.add('form-control');
+inputFechaElaboracion.name = 'fecha_elaboracion_muestra_' + contador;
+inputFechaElaboracion.required = true;
+
+// Obtener la fecha actual en formato YYYY-MM-DD
+let fechaActual = new Date().toISOString().split('T')[0];
+
+// Establecer la fecha máxima como la fecha actual
+inputFechaElaboracion.max = fechaActual;
+
+
+        let labelProcedencia = document.createElement('label');
+        labelProcedencia.textContent = 'Procedencia Muestra ' + contador + ':';
+
+        let inputProcedencia = document.createElement('input');
+        inputProcedencia.type = 'text';
+        inputProcedencia.classList.add('form-control');
+        inputProcedencia.name = 'procedencia_muestra_' + contador;
+        inputProcedencia.required = true;
+
+        muestraContainer.appendChild(labelTipoMuestra);
+        muestraContainer.appendChild(selectTipoMuestra);
+        muestraContainer.appendChild(document.createElement('br'));
+        muestraContainer.appendChild(labelCantidadMuestra);
+        muestraContainer.appendChild(inputCantidadMuestra);
+        muestraContainer.appendChild(document.createElement('br'));
+        muestraContainer.appendChild(labelFechaElaboracion);
+        muestraContainer.appendChild(inputFechaElaboracion);
+        muestraContainer.appendChild(document.createElement('br'));
+        muestraContainer.appendChild(labelProcedencia);
+        muestraContainer.appendChild(inputProcedencia);
+        muestraContainer.appendChild(document.createElement('br'));
+        muestraContainer.appendChild(labelEnsayo);
+        muestraContainer.appendChild(selectEnsayo);
+
+        document.getElementById('muestras-container').appendChild(muestraContainer);
+    }
+
+
+        var fechaCreadoInput = document.getElementById('fecha_creado');
+    var fechaHoraActual = new Date();
+    var fechaHoraFormateada = fechaHoraActual.getFullYear() + '-' +
+        ('0' + (fechaHoraActual.getMonth() + 1)).slice(-2) + '-' +
+        ('0' + fechaHoraActual.getDate()).slice(-2) + 'T' +
+        ('0' + fechaHoraActual.getHours()).slice(-2) + ':' +
+        ('0' + fechaHoraActual.getMinutes()).slice(-2);
+    fechaCreadoInput.value = fechaHoraFormateada;
+
+function formatoTelefono(input) {
+    let valor = input.value.replace(/\D/g, '');
+
+    let formattedValue = '';
+    for (let i = 0; i < valor.length; i++) {
+        if (i === 4) {
+            formattedValue += '-';
+        }
+        formattedValue += valor.charAt(i);
+    }
+
+    input.value = formattedValue;
+}
+</script>
+
+    {% endblock %}
+{% endblock %}

@@ -1,0 +1,207 @@
+controllers:
+    resource: ../src/Controller/
+    type: annotation
+
+kernel:
+    resource: ../src/Kernel.php
+    type: annotation
+
+login:
+    path: /login
+    controller: App\Controller\LoginController::login
+
+logout:
+    path: /logout
+    controller: App\Controller\LoginController::logout
+
+inicio:
+    path: /inicio
+    controller: App\Controller\BaseController::inicio
+
+AgregarUsuario:
+    path: /AgregarUsuario
+    controller: App\Controller\UsuariosController::AgregarUsuario
+
+usuarios:
+    path: /usuarios
+    controller: App\Controller\UsuariosController::usuarios
+
+addUsuarios:
+    path: /addUsuarios
+    controller: App\Controller\UsuariosController::addUsuarios
+
+upUsuario:
+    path: /upUsuario/{id}
+    controller: App\Controller\UsuariosController::upUsuario
+
+eliminarUsuario:
+    path: /eliminarUsuario/{id}
+    controller: App\Controller\UsuariosController::eliminarUsuario
+
+AgregarEmpresa:
+    path: /AgregarEmpresa
+    controller: App\Controller\EmpresasController::AgregarEmpresa
+
+AgregarCliente:
+    path: /AgregarCliente
+    controller: App\Controller\EmpresasController::AgregarCliente
+
+clientes:
+    path: /clientes
+    controller: App\Controller\EmpresasController::empresas
+
+addEmpresa:
+    path: /addEmpresa
+    controller: App\Controller\EmpresasController::addEmpresa
+
+upEmpresa:
+    path: /upEmpresa/{id}
+    controller: App\Controller\EmpresasController::upEmpresa
+
+eliminarEmpresa:
+    path: /eliminarEmpresa/{id}
+    controller: App\Controller\EmpresasController::eliminarEmpresa
+
+municipios:
+    path: /municipios/{departamentoId}
+    controller: App\Controller\EmpresasController::obtenerMunicipios
+    
+proyectos:
+    path: /proyectos
+    controller: App\Controller\ProyectosController::proyectos
+
+AgregarProyecto:
+    path: /AgregarProyecto/{id}
+    controller: App\Controller\ProyectosController::AgregarProyecto
+
+upProyecto:
+    path: /upProyecto/{id}
+    controller: App\Controller\ProyectosController::upProyecto
+
+addProyecto:
+    path: /addProyecto
+    controller: App\Controller\ProyectosController::addProyecto
+
+muestras:
+    path: /muestras
+    controller: App\Controller\MuestrasController::muestras
+
+addMuestra:
+    path: /addMuestra
+    controller: App\Controller\MuestrasController::addMuestra
+
+AgregarMuestra:
+    path: /AgregarMuestra/{id}
+    controller: App\Controller\MuestrasController::AgregarMuestra
+
+detalle:
+    path: /detalle/{id}
+    controller: App\Controller\MuestrasController::detalle
+
+guardarMuestra:
+    path: /guardarMuestra
+    controller: App\Controller\MuestrasController::guardarMuestra
+
+auditoria:
+    path: /auditoria
+    controller: App\Controller\BaseController::auditoria
+
+mantenimiento:
+    path: /mantenimiento
+    controller: App\Controller\MantenimientoController::mantenimiento
+
+agregarTipoMuestra:
+    path: /agregarTipoMuestra
+    controller: App\Controller\MantenimientoController::agregarTipoMuestra
+
+agregarMolde:
+    path: /agregarMolde
+    controller: App\Controller\MantenimientoController::agregarMolde
+
+agregarEnsayo:
+    path: /agregarEnsayo
+    controller: App\Controller\MantenimientoController::agregarEnsayo
+
+upTipoMuestra:
+    path: /upTipoMuestra
+    controller: App\Controller\MantenimientoController::upTipoMuestra
+
+upEnsayo:
+    path: /upEnsayo
+    controller: App\Controller\MantenimientoController::upEnsayo
+
+upMolde:
+    path: /upMolde
+    controller: App\Controller\MantenimientoController::upMolde
+
+equipo:
+    path: /equipo
+    controller: App\Controller\EquipoController::equipo
+
+addEquipo:
+    path: /addEquipo/{id}
+    controller: App\Controller\EquipoController::addEquipo
+
+agregarEquipo:
+    path: /agregarEquipo
+    controller: App\Controller\EquipoController::agregarEquipo
+
+marcarEquipo:
+    path: /marcarEquipo/{id}
+    controller: App\Controller\EquipoController::marcarEquipo
+
+upEquipo:
+    path: /upEquipo/{id}
+    controller: App\Controller\EquipoController::upEquipo
+
+archivoSistema_cilindro:
+    path: /archivoSistema_cilindro
+    controller: App\Controller\MuestrasController::archivoSistema_cilindro
+
+archivoModificado_cilindro:
+    path: /archivoModificado_cilindro/{id}
+    controller: App\Controller\MuestrasController::archivoModificado_cilindro
+
+subirArchivoModificado:
+    path: /subirArchivoModificado
+    controller: App\Controller\MuestrasController::subirArchivoModificado
+
+auditoria_cilindro:
+    path: /auditoria_cilindro/{id}
+    controller: App\Controller\MuestrasController::auditoria_cilindro
+
+auditoria_mortero:
+    path: /auditoria_mortero/{id}
+    controller: App\Controller\MuestrasController::auditoria_mortero
+
+auditoria_vigas:
+    path: /auditoria_vigas/{id}
+    controller: App\Controller\MuestrasController::auditoria_vigas
+
+auditoria_prismas:
+    path: /auditoria_prismas/{id}
+    controller: App\Controller\MuestrasController::auditoria_prismas
+
+auditoria_lodocretos:
+    path: /auditoria_lodocretos/{id}
+    controller: App\Controller\MuestrasController::auditoria_lodocretos
+
+descargarArchivos:
+    path: /descargarArchivos/{id}/{opcion}
+    controller: App\Controller\MuestrasController::descargarArchivos
+
+subirArchivos:
+    path: /subirArchivos
+    controller: App\Controller\MuestrasController::subirArchivos
+
+descargarTodosArchivos:
+    path: /descargarTodosArchivos/{id}
+    controller: App\Controller\MuestrasController::descargarTodosArchivos
+
+agregarPlantilla:
+    path: /agregarPlantilla
+    controller: App\Controller\MantenimientoController::agregarPlantilla
+
+editarPlantilla:
+    path: /editarPlantilla
+    controller: App\Controller\MantenimientoController::editarPlantilla

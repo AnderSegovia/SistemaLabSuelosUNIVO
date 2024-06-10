@@ -1,0 +1,290 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #022344;
+    z-index: -1;
+    animation: gradientBG 10s ease infinite;
+}
+
+.shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.circle,
+.square,
+.triangle,
+.cylinder,
+.pentagon,
+.hexagon {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-color: #0099cc;
+    border-radius: 50%;
+}
+
+.circle {
+    top: 10%;
+    left: 10%;
+    animation: moveCircle 20s linear infinite;
+}
+
+.square {
+    top: 30%;
+    left: 30%;
+    animation: moveSquare 23s linear infinite;
+}
+
+.triangle {
+    top: 50%;
+    left: 50%;
+    animation: moveTriangle 27s linear infinite;
+}
+
+.cylinder {
+    top: 70%;
+    left: 70%;
+    width: 80px;
+    height: 160px;
+    border-radius: 40px;
+    animation: moveCylinder 35s linear infinite;
+}
+.cylinder:nth-child(4) {
+    top: 20%;
+    left: 80%;
+    width: 60px;
+    height: 120px;
+    border-radius: 30px;
+    animation: moveCylinder4 33s linear infinite; 
+}
+
+.cylinder:nth-child(5) {
+    top: 70%;
+    left: 20%;
+    width: 80px;
+    height: 160px;
+    border-radius: 40px;
+    animation: moveCylinder5 25s linear infinite; 
+}
+
+.cylinder:nth-child(6) {
+    top: 80%;
+    left: 60%;
+    width: 100px;
+    height: 200px;
+    border-radius: 50px;
+    animation: moveCylinder6 60s linear infinite; 
+}
+
+
+.pentagon {
+    top: 80%;
+    left: 20%;
+    width: 0;
+    height: 0;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-bottom: 80px solid #022344;
+    animation: movePentagon 20s linear infinite;
+}
+
+.hexagon {
+    top: 90%;
+    left: 60%;
+    width: 120px;
+    height: 70px;
+    background-color: #022344;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    animation: moveHexagon 40s linear infinite;
+}
+
+@keyframes moveCircle {
+    0% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(50vw, 50vh);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes moveSquare {
+    0% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(50vw, -50vh);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes moveTriangle {
+    0% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(-50vw, 50vh);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes moveCylinder {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+        transform: translate(-20vw, -20vh) rotate(180deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+@keyframes moveCylinder4 {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+        transform: translate(-50vw, -50vh) rotate(180deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+
+@keyframes moveCylinder5 {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+        transform: translate(50vw, -50vh) rotate(180deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(310deg);
+    }
+}
+
+@keyframes moveCylinder6 {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+        transform: translate(-10vw, -50vh) rotate(180deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+
+
+@keyframes movePentagon {
+    0% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(50vw, -100vh);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes moveHexagon {
+    0% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(-100vw, -90vh)rotate(190deg);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+
+.login-container {
+    position: relative;
+    z-index: 1;
+}
+
+.login-card {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    max-width: 400px;
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-color: #022344;
+    }
+    50% {
+        background-color: #0099cc;
+    }
+    100% {
+        background-color: #022344;
+    }
+}

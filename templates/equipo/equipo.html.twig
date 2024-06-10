@@ -1,0 +1,159 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista de Equipos{% endblock %}
+
+{% block body %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<div id="container" style="margin-bottom: 100px;">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Equipos</h1>
+        <div>
+            <form action="" method="" class="form-inline my-2 my-lg-0">
+                <input id="myInput" class="form-control me-2" type="text" placeholder="Buscar" aria-label="Buscar">
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead >
+                <tr>
+                    <th>#</th>
+                    <th>Cliente </th>
+                    <th>Proyecto</th>
+                    <th>Atencion</th>
+                    <th>Estado</th>
+                    <th>Salida</th>
+                    <th>Recepción</th>
+                    <th>Días</th>
+                    <th>Tec. Entrega</th>
+                    <th>Tec. Recibe</th>
+            {% set fkRol = app.session.get('fk_rol') %}
+            {% if fkRol == 1 %}
+                    <th>Acciones</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody id="miTabla">
+                {% for equipo in equipos |reverse %}
+                    <tr class="main-row" data-toggle="collapse" data-target="#details{{ equipo.idEquipo }}" aria-expanded="false" aria-controls="details{{ equipo.idEquipo }}">
+                        <td>{{ loop.index }}</td>
+                        <td>{{ equipo.fkProyectoEquipo.fkCliente.nombreEmpresa }}</td>
+                        <td>{{ equipo.fkProyectoEquipo.nombreProyecto }}</td>
+<td><a href="#" data-toggle="modal" data-target="#exampleModal{{ equipo.idEquipo }}">{{ equipo.atencion}}</a></td>
+                        <td>{{ equipo.estado }}</td>
+                        <td>{{ equipo.fechaSalida|date('Y-m-d') }}</td>
+                        <td>{{ equipo.fechaRecepcion ? equipo.fechaRecepcion|date('Y-m-d') : '' }}</td>
+                        <td>{{ equipo.diasAlquiler }}</td>
+                        <td>{{ equipo.fkTecnicoEntrega.nombreUsuario }}</td>
+                        <td>
+                            {% if equipo.fkTecnicoRecibe != null %}
+                                {{ equipo.fkTecnicoRecibe.nombreUsuario }}
+                            {% else %}
+                                <a href="{{ path('marcarEquipo', {'id': equipo.idEquipo}) }}" class="btn btn-secondary">Marcar como Recibido</a>
+                            {% endif %}
+                        </td>
+                                    {% if fkRol == 1 %}
+                        <td>
+
+                            {% if equipo.fkTecnicoRecibe == null %}
+                                <a href="{{ path('upEquipo', {'id': equipo.idEquipo}) }}" class="btn btn-warning">Editar</a>
+                            {% endif %}
+                            
+                        </td>
+                        {% endif %}
+                    </tr>
+                    <tr id="details{{ equipo.idEquipo }}" class="collapse detail-row">
+                        <td colspan="10">
+                            <div class="card card-body">
+                                <table class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Cantidad</th>
+                                            <th>Molde</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for detalle in detalleEquipo |reverse %}
+                                            {% if detalle.fkEquipo.idEquipo == equipo.idEquipo %}
+                                                <tr>
+                                                    <td>{{ detalle.cantidadEquipo }}</td>
+                                                    <td>{{ detalle.fkMolde.nombreMolde }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <div class="modal fade" id="exampleModal{{ equipo.idEquipo }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ equipo.idEquipo }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Detalles</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" id="modalBody">
+                                    <p><strong>Atencion:</strong> {{ equipo.atencion }}</p>
+                                    <p><strong>Cargo:</strong> {{ equipo.cargo }}</p>
+                                    <p><strong>Contacto:</strong> {{ equipo.contacto }}</p>
+                                    <p><strong>Fecha de Registro:</strong> {{ equipo.fechaElaboracion|date('Y-m-d H:i:s') }}</p>
+                                    <p><strong>Observaciones:</strong> {{ equipo.observaciones ?: '' }}</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        function toggleDetailsRow(isOpen, detailsRow) {
+            $(".detail-row").collapse('hide');
+            $(".main-row").removeClass("active");
+            if (!isOpen) {
+                detailsRow.collapse('show');
+                detailsRow.data('isopen', 'true');
+                detailsRow.prev(".main-row").addClass("active");
+            } else {
+                detailsRow.collapse('hide');
+                detailsRow.data('isopen', 'false');
+            }
+        }
+
+        $(".main-row").click(function () {
+            var detailsRow = $(this).next(".detail-row");
+            var isOpen = detailsRow.data('isopen') === 'true';
+            toggleDetailsRow(isOpen, detailsRow);
+        });
+
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#miTabla .main-row").each(function () {
+                var text = $(this).text().toLowerCase();
+                var matches = text.indexOf(value) > -1;
+                var detailsRow = $(this).next(".detail-row");
+                $(this).toggle(matches);
+                if (!matches) {
+                    toggleDetailsRow(false, detailsRow);
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+{% endblock %}

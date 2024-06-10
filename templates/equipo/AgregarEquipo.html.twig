@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Agregar Equipo{% endblock %}
+
+{% block body %}
+    {% block styles %}
+        <link rel="stylesheet" href="{{ asset('assets/css/stylesForm.css') }}">
+    {% endblock %}
+
+    <h1>Agregar Equipo</h1>
+
+    <div class="form-container">
+        <form id="formulario" action="{{path ("agregarEquipo")}}" method="post">
+            <div class="form-group">
+                <label for="atencion">Atención:</label>
+                <input type="text" id="atencion" name="atencion" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cargo">Cargo:</label>
+                <input type="text" id="cargo" name="cargo" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contacto">Contacto:</label>
+                <input type="text" id="contacto" name="contacto" required maxlength="9" inputmode="numeric" oninput="formatoTelefono(this)">
+            </div>
+
+            <div class="form-group">
+                <label for="diasAlquiler"> Cantidad de días de Alquiler:</label>
+                <input type="number" id="diasAlquiler" name="diasAlquiler" required min="1">
+            </div>
+
+            <div class="form-group">
+                <label for="fechaSalida">Fecha de Salida:</label>
+                <input type="datetime-local" id="fechaSalida" name="fechaSalida" required>
+            </div>
+
+            <div id="equipos-container">
+                <!-- Aquí se agregarán dinámicamente los campos de equipos -->
+            </div>
+
+            <div class="form-group">
+                <label for="observaciones">Observaciones:</label>
+                <input type="text" id="observaciones" name="observaciones">
+            </div>
+            <input type="hidden" id="fk_proyecto" name="fk_proyecto" value="{{ idProyecto }}">
+
+
+            <button type="button" onclick="agregarEquipo()" class="btn btn-secondary">Agregar Equipo</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+    </div>
+
+    {% block javascripts %}
+        <script>
+            var equipos = [
+                {% for equipo in moldes %}
+                    {
+                        idEquipo: {{ equipo.idMolde }},
+                        nombreEquipo: "{{ equipo.nombreMolde }}",
+                        cantidadEquipo: "{{ equipo.cantidadMolde }}"
+
+                    },
+                    {% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            function agregarEquipo() {
+                let contador = document.querySelectorAll('.equipo-container').length + 1;
+
+                let equipoContainer = document.createElement('div');
+                equipoContainer.classList.add('equipo-container');
+                equipoContainer.classList.add('form-group');
+
+                let labelEquipo = document.createElement('label');
+                labelEquipo.textContent = 'Equipo ' + contador + ':';
+
+                let selectEquipo = document.createElement('select');
+                selectEquipo.classList.add('form-control');
+                selectEquipo.name = 'equipo_' + contador;
+                selectEquipo.required = true;
+
+                let optionDefaultEquipo = document.createElement('option');
+                optionDefaultEquipo.value = '';
+                optionDefaultEquipo.textContent = '-- Seleccione un Equipo --';
+                optionDefaultEquipo.disabled = true;
+                optionDefaultEquipo.selected = true;
+                selectEquipo.appendChild(optionDefaultEquipo);
+
+                equipos.forEach(function(equipo) {
+                    let option = document.createElement('option');
+                    option.value = equipo.idEquipo;
+                    option.textContent = equipo.cantidadEquipo +' ---> '+equipo.nombreEquipo;
+                    option.dataset.cantidadEquipo = equipo.cantidadEquipo;
+                    selectEquipo.appendChild(option);
+                });
+
+                let labelCantidadEquipo = document.createElement('label');
+                labelCantidadEquipo.textContent = 'Cantidad ' + contador + ':';
+
+                let inputCantidadEquipo = document.createElement('input');
+                inputCantidadEquipo.type = 'number';
+                inputCantidadEquipo.classList.add('form-control');
+                inputCantidadEquipo.name = 'cantidad_equipo_' + contador;
+                inputCantidadEquipo.required = true;
+                inputCantidadEquipo.min = '1';
+inputCantidadEquipo.max = '1';
+
+selectEquipo.addEventListener('change', function() {
+    let selectedOption = selectEquipo.options[selectEquipo.selectedIndex];
+    let maxCantidad = selectedOption.dataset.cantidadEquipo;
+    inputCantidadEquipo.max = maxCantidad;
+});
+                 
+
+                equipoContainer.appendChild(labelEquipo);
+                equipoContainer.appendChild(selectEquipo);
+                equipoContainer.appendChild(document.createElement('br'));
+                equipoContainer.appendChild(labelCantidadEquipo);
+                equipoContainer.appendChild(inputCantidadEquipo);
+
+                document.getElementById('equipos-container').appendChild(equipoContainer);
+            }
+
+            // Función para formatear el teléfono
+            function formatoTelefono(input) {
+                let valor = input.value.replace(/\D/g, '');
+                let formattedValue = '';
+                for (let i = 0; i < valor.length; i++) {
+                    if (i === 4) {
+                        formattedValue += '-';
+                    }
+                    formattedValue += valor.charAt(i);
+                }
+                input.value = formattedValue;
+            }
+
+
+function setMaxFechaActual() {
+    var camposFecha = document.querySelectorAll('[name^="fechaSalida"]');
+    var fechaActual = new Date().toISOString().split('T')[0];
+
+    camposFecha.forEach(function(inputFecha) {
+        inputFecha.max = fechaActual;
+    });
+}
+
+setMaxFechaActual();
+        </script>
+    {% endblock %}
+{% endblock %}

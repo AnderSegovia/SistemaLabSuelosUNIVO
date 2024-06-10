@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Proyecto{% endblock %}
+
+{% block body %}
+    {% block styles %}
+        <link rel="stylesheet" href="{{ asset('assets/css/stylesForm.css') }}">
+    {% endblock %}
+    <h1>Editar Datos del Proyecto</h1>
+
+    <div class="form-container">
+        <form action="{{ path('upProyecto', {'id': proyecto.idProyecto}) }}" method="post">
+            <div class="form-group">
+                <label for="codigo_proyecto">Codigo de Proyecto:</label>
+                <input type="text" class="form-control" id="codigo_proyecto" name="codigo_proyecto" value="{{ proyecto.codigo }}" required>
+            </div>
+            <div class="form-group">
+                <label for="nombre_proyecto">Nombre del Proyecto:</label>
+                <input type="text" class="form-control" id="nombre_proyecto" name="nombre_proyecto" value="{{ proyecto.nombreProyecto }}" required>
+            </div>
+            <div class="form-group">
+                <label for="ubicacion_proyecto">Ubicación del Proyecto:</label>
+                <input type="text" class="form-control" id="ubicacion_proyecto" name="ubicacion_proyecto" value="{{ proyecto.ubicacionProyecto }}" required>
+            </div>
+            <div class="form-group">
+                <label for="departamento_proyecto">Departamento:</label>
+                <select class="form-control" id="departamento_proyecto" name="departamento_proyecto" required>
+                    <option value="" disabled>-- Seleccione un Departamento --</option>
+                    {% for departamento in departamentos %}
+                        {% if departamento.idDepartamento == proyecto.fkDepartamento.idDepartamento %}
+                            <option value="{{ departamento.idDepartamento }}" selected>{{ departamento.nombreDepartamento }}</option>
+                        {% else %}
+                            <option value="{{ departamento.idDepartamento }}">{{ departamento.nombreDepartamento }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="municipio_proyecto">Municipio:</label>
+                <select class="form-control" id="municipio_proyecto" name="municipio_proyecto" required>
+                    <option value="" disabled>-- Seleccione un Municipio --</option>
+                    {% for municipio in municipios %}
+                        {% if municipio.idMunicipio == proyecto.fkMunicipio.idMunicipio %}
+                            <option value="{{ municipio.idMunicipio }}" selected>{{ municipio.nombreMunicipio }}</option>
+                        {% else %}
+                            <option value="{{ municipio.idMunicipio }}">{{ municipio.nombreMunicipio }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </form>
+    </div>
+       {% block javascripts %}
+    <script>
+        var municipios = [
+            {% for municipio in municipios %}
+                {
+                    id: {{ municipio.idMunicipio }},
+                    nombre: '{{ municipio.nombreMunicipio }}',
+                    departamentoId: {{ municipio.fkDepartamento.idDepartamento }}
+                },
+            {% endfor %}
+        ];
+
+
+        function filtrarMunicipios(departamentoId, municipioSeleccionadoId) {
+
+            var municipiosFiltrados = municipios.filter(function(municipio) {
+                return municipio.departamentoId === departamentoId;
+            });
+
+
+            var municipiosSelect = document.getElementById('municipio_proyecto');
+
+            municipiosSelect.innerHTML = '<option value="" disabled>-- Seleccione un Municipio --</option>';
+
+            municipiosFiltrados.forEach(function(municipio) {
+                var option = document.createElement('option');
+                option.value = municipio.id; 
+                option.textContent = municipio.nombre;
+                
+                if (municipio.id === municipioSeleccionadoId) {
+                    option.selected = true; 
+                }
+                
+                municipiosSelect.appendChild(option);
+            });
+        }
+
+
+        var departamentoIdSeleccionado = parseInt(document.getElementById('departamento_proyecto').value);
+        var municipioSeleccionadoId = parseInt(document.getElementById('municipio_proyecto').value);
+
+        filtrarMunicipios(departamentoIdSeleccionado, municipioSeleccionadoId);
+
+
+        document.getElementById('departamento_proyecto').addEventListener('change', function() {
+            var departamentoIdSeleccionado = parseInt(this.value); 
+            filtrarMunicipios(departamentoIdSeleccionado);
+        });
+    </script>
+{% endblock %}
+
+{% endblock %}

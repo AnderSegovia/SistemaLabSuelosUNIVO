@@ -1,0 +1,257 @@
+/* Estilos por defecto (modo claro) */
+body {
+    background-color: white;
+    color: black;
+}
+
+header {
+    background-color: #f8f9fa; /* Ajuste para modo claro */
+    color: #343a40;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section {
+    margin-top: 70px;
+}
+
+nav {
+    background-color: #f8f9fa;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    margin-bottom: 10px;
+}
+
+nav ul li {
+    color: #343a40; /* Ajuste para modo claro */
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: #044285;
+    color: white;
+}
+
+main {
+    padding: 20px;
+}
+
+.card {
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff; /* Ajuste para modo claro */
+    color: #343a40; /* Ajuste para modo claro */
+}
+
+.card-header {
+    background-color: #007bff;
+    color: white;
+    border-radius: 10px 10px 0 0;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #343a40; /* Ajuste para modo claro */
+}
+
+.table th, .table td {
+    border: 1px solid #dee2e6;
+    padding: 12px;
+    text-align: center;
+    
+}
+
+.table thead {
+    background-color: #8abcf1;
+    color: rgb(0, 0, 0);
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.table tbody tr:hover {
+    background-color: #e9ecef;
+}
+body .dropdown-menu .btn:hover,
+body .dropdown-menu .btn:focus {
+    background-color: #444;
+    color: rgb(252, 252, 252) !important;
+}
+body .dropdown-menu .dropdown-item:hover,
+body .dropdown-menu .dropdown-item:focus {
+    background-color: #444;
+    color: rgb(255, 255, 254) !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+body.dark-mode input,
+    body.dark-mode textarea,
+    body.dark-mode select {
+        background-color: #333;
+        color: white;
+
+    }
+
+    body.dark-mode input::placeholder,
+    body.dark-mode textarea::placeholder {
+        color: #bbb;
+    }
+
+    body.dark-mode input:focus,
+    body.dark-mode textarea:focus,
+    body.dark-mode select:focus {
+        background-color: #444;
+        border-color: #777;
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+/* Estilos para modo oscuro */
+body.dark-mode {
+    background-color: #181A1B;
+    color: white;
+}
+
+body.dark-mode header,
+body.dark-mode nav {
+    background-color: #181A1B;
+    color: white;
+}
+
+body.dark-mode nav ul li {
+    color: white; /* Ajuste para modo oscuro */
+}
+
+body.dark-mode main,
+body.dark-mode .card {
+    background-color: #1e1e1e;
+    color: white;
+}
+
+body.dark-mode .card-header {
+    background-color: #444;
+}
+
+body.dark-mode .table th {
+    background-color: #292C2E;
+    color: white;
+    border-color: #787063 ;
+}
+
+body.dark-mode .table tbody tr:nth-child(even) {
+    background-color: #292C2E;
+    border-color: #383D3F ;
+}
+body.dark-mode .table tbody td{
+
+    border-color: #787063 ;
+}
+
+body.dark-mode .table tbody tr:hover {
+    background-color: #444444;
+}
+
+body.dark-mode footer {
+    background-color: #333;
+    color: white;
+}
+body.dark-mode .modal-content {
+    background-color: #333; /* Fondo del modal en modo oscuro */
+    color: white; /* Color del texto del modal en modo oscuro */
+}
+
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer {
+    border-color: #444; /* Borde del modal en modo oscuro */
+}
+
+body.dark-mode .modal-header {
+    background-color: #444; /* Fondo del encabezado del modal en modo oscuro */
+}
+
+body.dark-mode .modal-footer {
+    background-color: #444; /* Fondo del pie del modal en modo oscuro */
+}
+
+body.dark-mode .modal-body {
+    background-color: #333; /* Fondo del cuerpo del modal en modo oscuro */
+}
+
+
+body.dark-mode .dropdown-menu {
+    background-color: #333;
+    color: white;
+    border-color: #444;
+}
+
+body.dark-mode .dropdown-menu .dropdown-item {
+    color: white !important;
+}
+
+body.dark-mode .dropdown-menu .dropdown-item:hover,
+body.dark-mode .dropdown-menu .dropdown-item:focus {
+    background-color: #444;
+    color: rgb(122, 221, 9) !important;
+}
+
+body.dark-mode .dropdown-menu .btn {
+    color: white !important;
+}
+
+body.dark-mode .dropdown-menu .btn:hover,
+body.dark-mode .dropdown-menu .btn:focus {
+    background-color: #444;
+    color: rgb(122, 221, 9) !important;
+}
+
+body.dark-mode .dropdown-menu .dark-mode-label {
+    color: white !important;
+}
+body.dark-mode .form-control {
+    background-color: #333;
+    color: white;
+    border-color: #555;
+}
+
+body.dark-mode .form-control:focus {
+    background-color: #444;
+    color: white;
+    border-color: #777;
+}
+
+body.dark-mode .form-group label {
+    color: white;
+}
+
+body.dark-mode a {
+    color: #1D70B7; /* Color del texto de los enlaces */
+}
+
+body.dark-mode a:hover {
+    color: rgb(122, 221, 9) ; /* Color del texto de los enlaces al pasar el mouse */
+}

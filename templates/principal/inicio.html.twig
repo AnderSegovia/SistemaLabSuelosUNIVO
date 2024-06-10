@@ -1,0 +1,15 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block body %}
+<body>
+        <div id="inicio" class="screen active-screen" style="margin-bottom: 100px;">
+        <h1 class="text-center">Inicio</h1>
+        {% set nombreUsuario = app.session.get('nombre_usuario') %}
+        <h2> Hola! {{ nombreUsuario }}</h2>
+    </div>
+</body>
+
+{% endblock %}

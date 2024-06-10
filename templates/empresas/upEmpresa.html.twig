@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Cliente{% endblock %}
+
+{% block body %}
+    {% block styles %}
+        <link rel="stylesheet" href="{{ asset('assets/css/stylesForm.css') }}">
+    {% endblock %}
+    <h1>Editar Datos del Cliente</h1>
+
+    <div class="form-container">
+        <form action="" method="post">
+            <div class="form-group">
+                <label for="nombreEmpresa">Nombre:</label>
+                <input type="text" class="form-control" id="nombreEmpresa" name="nombreEmpresa" value="{{ empresa.getNombreEmpresa() }}" required>
+            </div>
+            <div class="form-group">
+                <label for="correoEmpresa">Correo:</label>
+                <input type="email" class="form-control" id="correoEmpresa" name="correoEmpresa" value="{{ empresa.getCorreoEmpresa() }}" required>
+            </div>
+            <div class="form-group">
+                <label for="departamentoEmpresa">Departamento:</label>
+                <select class="form-control" id="departamentoEmpresa" name="departamentoEmpresa" required>
+                    {% for departamento in departamentos %}
+                        {% if departamento.getIdDepartamento() == empresa.getFkDepartamento().getIdDepartamento() %}
+                            <option value="{{ departamento.getIdDepartamento() }}" selected>{{ departamento.getNombreDepartamento() }}</option>
+                        {% else %}
+                            <option value="{{ departamento.getIdDepartamento() }}">{{ departamento.getNombreDepartamento() }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="municipioEmpresa">Municipio:</label>
+                <select class="form-control" id="municipioEmpresa" name="municipioEmpresa" required>
+                    {% for municipio in municipios %}
+                        {% if municipio.getIdMunicipio() == empresa.getFkMunicipio().getIdMunicipio() %}
+                            <option value="{{ municipio.getIdMunicipio() }}" selected>{{ municipio.getNombreMunicipio() }}</option>
+                        {% else %}
+                            <option value="{{ municipio.getIdMunicipio() }}">{{ municipio.getNombreMunicipio() }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+
+
+            <div class="form-group">
+                <label for="duiDepositante">DUI:</label>
+                <input type="text" class="form-control" id="duiDepositante" name="duiDepositante" value="{{ empresa.getDuiDepositante() }}" required maxlength="10">
+            </div>
+            <div class="form-group">
+                <label for="direccionEmpresa">Dirección:</label>
+                <input type="text" class="form-control" id="direccionEmpresa" name="direccionEmpresa" value="{{ empresa.getDireccionEmpresa() }}" required>
+            </div>
+            <div class="form-group">
+                <label for="telefonoEmpresa">Teléfono:</label>
+                <input type="text" class="form-control" id="telefonoEmpresa" name="telefonoEmpresa" value="{{ empresa.getTelefonoEmpresa() }}" required maxlength="9">
+            </div>
+
+            {% if empresa.getTipoCliente() == 1 %}
+                <div class="form-group">
+                    <label for="noNit">NIT de la Empresa:</label>
+                    <input type="text" class="form-control" id="noNit" name="noNit" value="{{ empresa.getNoNit() }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="giroEmpresa">Giro de la Empresa:</label>
+                    <input type="text" class="form-control" id="giroEmpresa" name="giroEmpresa" value="{{ empresa.getGiroEmpresa() }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="razonSocial">Razón Social Empresa:</label>
+                    <input type="text" class="form-control" id="razonSocial" name="razonSocial" value="{{ empresa.getRazonSocial() }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="noRegistronrc">Número de Registro NRC:</label>
+                    <input type="text" class="form-control" id="noRegistronrc" name="noRegistronrc" value="{{ empresa.getNoRegistronrc() }}" required>
+                </div>
+            {% endif %}
+
+
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </form>
+    </div>
+       {% block javascripts %}
+    <script>
+        var municipios = [
+            {% for municipio in municipios %}
+                {
+                    id: {{ municipio.getIdMunicipio() }},
+                    nombre: '{{ municipio.getNombreMunicipio() }}',
+                    departamentoId: {{ municipio.getFkDepartamento().getIdDepartamento() }}
+                },
+            {% endfor %}
+        ];
+
+
+        function filtrarMunicipios(departamentoId, municipioSeleccionadoId) {
+
+            var municipiosFiltrados = municipios.filter(function(municipio) {
+                return municipio.departamentoId === departamentoId;
+            });
+
+
+            var municipiosSelect = document.getElementById('municipioEmpresa');
+
+            municipiosSelect.innerHTML = '<option value="" disabled>-- Seleccione un Municipio --</option>';
+
+            municipiosFiltrados.forEach(function(municipio) {
+                var option = document.createElement('option');
+                option.value = municipio.id; 
+                option.textContent = municipio.nombre;
+                
+                if (municipio.id === municipioSeleccionadoId) {
+                    option.selected = true; 
+                }
+                
+                municipiosSelect.appendChild(option);
+            });
+        }
+
+
+        var departamentoIdSeleccionado = parseInt(document.getElementById('departamentoEmpresa').value);
+        var municipioSeleccionadoId = parseInt(document.getElementById('municipioEmpresa').value);
+
+        filtrarMunicipios(departamentoIdSeleccionado, municipioSeleccionadoId);
+
+
+        document.getElementById('departamentoEmpresa').addEventListener('change', function() {
+            var departamentoIdSeleccionado = parseInt(this.value); 
+            filtrarMunicipios(departamentoIdSeleccionado);
+        });
+    </script>
+{% endblock %}
+
+{% endblock %}

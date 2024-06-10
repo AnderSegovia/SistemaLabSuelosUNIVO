@@ -1,0 +1,244 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Muestras{% endblock %}
+
+{% block body %}
+<div class="container" style="margin-bottom: 100px;">
+    <h2>Detalles</h2>
+
+    <form action="" method="post">
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="entrega">Entrega:</label>
+            <input type="text" class="form-control" id="entrega" name="entrega" value="{{ material.atencion }}" required>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="cargo">Cargo:</label>
+            <input type="text" class="form-control" id="cargo" name="cargo" value="{{ material.cargo }}" required>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="contacto">Contacto:</label>
+            <input type="text" class="form-control" id="contacto" name="contacto" value="{{ material.contacto }}" required maxlength="9" inputmode="numeric" oninput="formatoTelefono(this)">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="observaciones">Observaciones:</label>
+            <textarea type="text" class="form-control" id="observaciones" name="observaciones" required>{{ material.observaciones }}</textarea>
+        </div>
+    </div>
+</div>
+
+        <input type="hidden" id="fk_proyecto" name="fk_proyecto" value="">
+        
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Muestras</h1>
+        <div>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarMuestraModal">Agregar Muestra</button>
+        </div>
+    </div>
+        <table id="muestras-table" class="table">
+            <thead class="table-dark">
+                <tr>    
+                    <th> </th>
+                    <th>Tipo de Muestra</th>
+                    <th>Cantidad</th>
+                    <th>Fecha Elaboración</th>
+                    <th>Procedencia o Características</th>
+                    <th>Ensayo a Realizar</th>
+                     <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for muestra in muestras | reverse %}
+                <tr>
+                    <td>{{muestra.idMuestra}}</td>
+                    <td>
+                      <select name="tipo_muestra[]" required >
+                          {% for opcion in opcionesTipoMuestra %}
+                              {% if opcion.idTipoMuestra == muestra.tipoMuestra.idTipoMuestra %}
+                                  <option value="{{ opcion.idTipoMuestra }}" selected>{{ opcion.nombreTipoMuestra }}</option>
+                              {% else %}
+                               {% if opcion.fkestado.nombreEstado == 'Activo' %}
+                                  <option value="{{ opcion.idTipoMuestra }}">{{ opcion.nombreTipoMuestra }}</option>
+                               {% endif %}
+                              {% endif %}
+                          {% endfor %}
+                      </select>
+                    </td>
+                    <td><input type="number" name="cantidad[]" min="1" value="{{ muestra.cantidad }}" required style="width: 48px;"></td>
+                    <td><input type="date" name="fecha_elaboracion[]" value="{{ muestra.fechaElaboracion|date('Y-m-d') }}" required></td>
+                    <td><textarea name="procedencia[]" rows="3" required style="width: 300px;">{{ muestra.procedencia }}</textarea></td>
+                    <td>
+                      <select name="ensayo[]" required >
+                          {% for opcion in opcionesEnsayo %}
+                              {% if opcion.idEnsayo == muestra.ensayo.idEnsayo %}
+                                  <option value="{{ opcion.idEnsayo }}" selected>{{ opcion.nombreEnsayo }}</option>
+                              {% else %}
+                               {% if opcion.fkestado.nombreEstado == 'Activo' %}
+                                  <option value="{{ opcion.idEnsayo }}">{{ opcion.nombreEnsayo }}</option>
+                               {% endif %}
+                              {% endif %}
+                          {% endfor %}
+                      </select>
+
+                    </td>
+
+
+
+
+
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick="eliminarMuestra(this)">Eliminar</button>
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Guardar Todo</button>
+    </form>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="agregarMuestraModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar Muestra</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="agregarMuestraForm" method="post" action="{{ path('guardarMuestra') }}">
+          <div class="form-group">
+            <label for="tipo_muestra">Tipo de Muestra:</label>
+<select class="form-control" id="tipo_muestra" name="tipo_muestra" required>
+    <option value="" selected disabled>-- Seleccione un Tipo Muestra --</option>
+    {% for tipo in opcionesTipoMuestra %}
+        {% if tipo.fkestado.nombreEstado == 'Activo' %}
+            <option value="{{ tipo.idTipoMuestra }}">{{ tipo.nombreTipoMuestra }}</option>
+        {% endif %}
+    {% endfor %}
+</select>
+
+          </div>
+          <div class="form-group">
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" name="cantidad" min="1" class="form-control" required >
+          </div>
+          <div class="form-group">
+            <label for="fecha_elaboracion">Fecha de Elaboración:</label>
+            <input type="date" name="fecha_elaboracion" class="form-control fecha-elaboracion" required>
+          </div>
+          <div class="form-group">
+            <label for="procedencia">Procedencia o Características:</label>
+            <textarea name="procedencia" rows="3" class="form-control" required ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="ensayo">Ensayo a Realizar:</label>
+                <select class="form-control" id="ensayo" name="ensayo" required>
+                    <option value="" selected disabled>-- Seleccione un Ensayo --</option>
+                    {% for ensayo in opcionesEnsayo %}
+                     {% if ensayo.fkestado.nombreEstado == 'Activo' %}
+                        <option value="{{ ensayo.idEnsayo }}">{{ ensayo.nombreEnsayo }}</option>
+                         {% endif %}
+                    {% endfor %}
+                </select>
+          </div>
+          <input type="hidden" name="fk_material" value="{{ material.idMaterial }}">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="guardarMuestra()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+function subirArchivo(idMuestra) {
+    var archivoInput = document.getElementById('archivo_modificado_' + idMuestra);
+    var archivo = archivoInput.files[0];
+    var idInput = document.getElementById('id_muestra_' + idMuestra).value;
+
+    if (archivo && idInput) {
+        var formData = new FormData();
+        formData.append('archivo_modificado', archivo);
+        formData.append('id_muestra', idInput);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{{ path('subirArchivoModificado') }}', true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                alert('El archivo se ha subido correctamente');
+                window.location.reload();
+            } else {
+                alert('Ha ocurrido un error al subir el archivo');
+            }
+        };
+        xhr.onerror = function() {
+            alert('Ha ocurrido un error al subir el archivo');
+        };
+        xhr.send(formData);
+    }
+}
+
+
+</script>
+
+<script>
+function formatoTelefono(input) {
+    let valor = input.value.replace(/\D/g, '');
+
+    let formattedValue = '';
+    for (let i = 0; i < valor.length; i++) {
+        if (i === 4) {
+            formattedValue += '-';
+        }
+        formattedValue += valor.charAt(i);
+    }
+
+    input.value = formattedValue;
+}
+
+    function eliminarMuestra(button) {
+        var row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+
+    function guardarMuestra() {
+    var form = document.getElementById("agregarMuestraForm");
+
+    document.body.appendChild(form);
+
+    form.submit();
+}
+
+function setMaxFechaActual() {
+    var camposFecha = document.querySelectorAll('[name^="fecha_elaboracion"]');
+    var fechaActual = new Date().toISOString().split('T')[0];
+
+    camposFecha.forEach(function(inputFecha) {
+        inputFecha.max = fechaActual;
+    });
+}
+
+setMaxFechaActual();
+
+
+</script>
+
+{% endblock %}

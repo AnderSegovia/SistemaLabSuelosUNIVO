@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista Usuario{% endblock %}
+
+{% block body %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<div id="#" style="margin-bottom: 100px;">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Usuarios</h1>
+        <div>
+        <form action="{{ path('AgregarUsuario') }}" method="post" class="form-inline my-2 my-lg-0">
+            <input id="myInput" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Agregar</button>
+        </form>
+        
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead >
+                <tr>
+                    <th>#</th>
+                    <th>Código de Usuario</th>
+                    <th>Nombre de Usuario</th>
+                    <th>Número de DUI</th>
+                    <th>Edad</th>
+                    <th>Teléfono</th>
+                    <th>Fecha de Creación</th>
+                    <th>Rol</th>
+                    <th>
+                            
+                    </th>
+
+                </tr>
+            </thead>
+            <div >
+            <tbody id="miTabla">
+            {% set usuarioActivo = app.session.get('codigo_usuario') %}
+                {% for usuario in usuarios %}
+                {% if usuario.codigoUsuario != usuarioActivo %}
+
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ usuario.codigoUsuario }}</td>
+                    <td>{{ usuario.nombreUsuario }}</td>
+                    <td>{{ usuario.numeroDui }}</td>
+                    <td>{{ usuario.edad }}</td>
+                    <td>{{ usuario.telefono }}</td>
+                    <td>{{ usuario.fechaCreado|date('Y-m-d H:i:s') }}</td>
+                    <td>{{ usuario.fkRol.nombreRol }}</td>
+                    <td>
+                        <a href="{{ path('upUsuario', {'id': usuario.codigoUsuario}) }}" class="btn btn-warning">Editar</a>
+                        </td>
+
+                </tr>
+                                {% endif %}
+
+                {% endfor %}
+                
+            </tbody>
+            </div>
+        </table>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#miTabla tr").each(function() {
+      var text = $(this).text().toLowerCase();
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+
+</script> 
+  
+{% endblock %}

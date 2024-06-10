@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista Clientes{% endblock %}
+
+{% block body %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<div id="#" style="margin-bottom: 100px;">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Clientes</h1>
+        <div>
+        <form action"" method="" class="form-inline my-2 my-lg-0">
+            <input id="myInput" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
+        <div>
+            {% set fkRol = app.session.get('fk_rol') %}
+            {% if fkRol == 1 %}
+                <a href="{{ path('AgregarCliente') }}" class="btn btn-outline-primary my-2 my-sm-0">Agregar Persona Natural</a>
+                <a href="{{ path('AgregarEmpresa') }}" class="btn btn-outline-primary my-2 my-sm-0">Agregar Persona Jurídica</a>
+            {% endif %}
+        </div>
+
+        </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+    <thead >
+        <tr>
+            <th>#</th>
+            <th>Nombre </th>
+            <th>Correo </th>
+            <th>Dirección </th>
+            <th>DUI</th>
+            <th>Teléfono </th>
+            <th>Tipo Persona</th>
+
+        </tr>
+    </thead>
+    <tbody id="miTabla">
+        {% for empresa in empresas |reverse %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+            {% if empresa.getTipoCliente() == 1 %}
+            <a href="#" data-toggle="modal" data-target="#exampleModal{{ empresa.idEmpresa }}">{{ empresa.nombreEmpresa }}</a>
+            {% else %}
+            {{empresa.nombreEmpresa}}
+            {% endif %}
+            </td>
+            <td>{{ empresa.correoEmpresa }}</td>
+            <td>{{ empresa.direccionEmpresa }} , {{ empresa.fkMunicipio.nombreMunicipio }}, {{ empresa.fkDepartamento.nombreDepartamento}}</td>
+
+            <td>{{ empresa.duiDepositante }}</td>
+            
+            <td>{{ empresa.telefonoEmpresa }}</td>
+            <td>{% if empresa.getTipoCliente() == 1 %}
+            Jurídica            {% else %}
+            Natural
+                        {% endif %}
+            </td>
+                {% if fkRol == 1 %}
+                
+            <td>
+            <a href="{{ path('upEmpresa', {'id': empresa.idEmpresa}) }}" class="btn btn-warning">Editar</a>
+            </td>
+            <td>
+                <a href="{{ path('AgregarProyecto', {'id': empresa.idEmpresa}) }}" class="btn btn-success">Proyecto</a>
+            </td>
+            {% endif %}
+        </tr>
+             <div class="modal fade" id="exampleModal{{ empresa.idEmpresa }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ empresa.idEmpresa }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Detalles de la Empresa</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="modalBody">
+                            <p><strong>Nombre Empresa:</strong> {{ empresa.nombreEmpresa }}</p>
+                            <p><strong>Correo Empresa:</strong> {{ empresa.correoEmpresa }}</p>
+                            <p><strong>DUI Depositante:</strong> {{ empresa.duiDepositante }}</p>
+                            <p><strong>Dirección Empresa:</strong> {{ empresa.direccionEmpresa }}</p>
+                            <p><strong>Teléfono Empresa:</strong> {{ empresa.telefonoEmpresa }}</p>
+                            <p><strong>NIT:</strong> {{ empresa.noNit }}</p>
+                            <p><strong>Giro Empresa:</strong> {{ empresa.giroEmpresa }}</p>
+                            <p><strong>Razón Social:</strong> {{ empresa.razonSocial }}</p>
+                            <p><strong>Número de Registro NRC:</strong> {{ empresa.noRegistronrc }}</p>
+                            <p><strong>Fecha Creado:</strong> {{ empresa.fechaCreado|date('Y-m-d H:i:s') }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        {% endfor %}
+    </tbody>
+</table>
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('a[data-toggle="modal"]').on('click', function(e) {
+            e.preventDefault(); 
+            var targetUrl = $(this).attr('href'); 
+            $.ajax({
+                url: targetUrl,
+                success: function(data) {
+                    $('#modalBody').html(data); 
+                    $('#exampleModal').modal('show'); 
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#miTabla tr").each(function() {
+      var text = $(this).text().toLowerCase();
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script> 
+{% endblock %}

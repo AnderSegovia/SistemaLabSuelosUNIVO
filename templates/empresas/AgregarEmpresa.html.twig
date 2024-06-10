@@ -1,0 +1,194 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Agregar Empresa{% endblock %}
+{% block body %}
+
+    {% block styles %}
+<link rel="stylesheet" href="{{ asset('assets/css/stylesForm.css') }}">
+    {% endblock %}
+        <h1>Agregar Cliente</h1>
+
+    <div class="form-container">
+  <form action="{{ path('addEmpresa') }}" method="post">
+
+        <div class="form-group">
+            <label for="nombre_empresa">Nombre:</label>
+            <input type="text" class="form-control" id="nombre_empresa" name="nombre_empresa" required>
+        </div>
+
+        <div class="form-group">
+            <label for="correo_empresa">Correo:</label>
+            <input type="email" class="form-control" id="correo_empresa" name="correo_empresa" required>
+        </div>
+
+            <div class="form-group">
+                <label for="departamentos">Departamento:</label>
+                <select class="form-control" id="departamentos" name="departamentos" required>
+                    <option value="" selected disabled>-- Seleccione un Departamento --</option>
+                    {% for depa in departamentos %}
+                        <option value="{{ depa.idDepartamento }}">{{ depa.nombreDepartamento }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="municipios">Municipio:</label>
+            <select class="form-control" id="municipios" name="municipios" required>
+            </select>
+            </div>
+
+<div class="form-group">
+    <label for="dui_depositante">DUI (Depositante):</label>
+    <input type="text" class="form-control" id="dui_depositante" name="dui_depositante" inputmode="numeric" required maxlength="10" oninput="formatoDUI(this)">
+</div>
+
+        <div class="form-group">
+            <label for="direccion_empresa">Dirección:</label>
+            <input type="text" class="form-control" id="direccion_empresa" name="direccion_empresa" required>
+        </div>
+
+<div class="form-group">
+    <label for="telefono_empresa">Teléfono Empresa:</label>
+    <input type="text" class="form-control" id="telefono_empresa" name="telefono_empresa" required maxlength="9" inputmode="numeric" oninput="formatoTelefono(this)">
+</div>
+
+<div class="form-group">
+    <label for="no_nit">NIT:</label>
+    <input type="text" class="form-control" id="no_nit" name="no_nit" required maxlength="17" inputmode="numeric" oninput="formatoNIT(this)">
+</div>
+
+        <div class="form-group">
+            <label for="giro_empresa">Giro :</label>
+            <input type="text" class="form-control" id="giro_empresa" name="giro_empresa" required>
+        </div>
+
+        <div class="form-group">
+            <label for="razon_social">Razón Social:</label>
+            <input type="text" class="form-control" id="razon_social" name="razon_social" required>
+        </div>
+
+<div class="form-group">
+    <label for="no_registroNRC">No. Registro NRC:</label>
+    <input type="text" class="form-control" id="no_registroNRC" name="no_registroNRC" required oninput="formatoNRC(this)" inputmode="numeric" maxlength="8">
+</div>
+
+        <div class="form-group">
+            <label for="fecha_creado">Fecha de Creación:</label>
+            <input type="datetime-local" class="form-control" id="fecha_creado" name="fecha_creado" required readonly>
+        </div>
+    <input type="hidden" id="tipo_cliente" name="tipo_cliente" value="1">
+
+    
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
+    </div>
+   {% block javascripts %}
+<script>
+    var municipios = [
+        {% for municipio in municipios %}
+            {
+                id: {{ municipio.idMunicipio }},
+                nombre: '{{ municipio.nombreMunicipio }}',
+                departamentoId: {{ municipio.fkDepartamento.idDepartamento }}
+            },
+        {% endfor %}
+    ];
+
+        document.getElementById('departamentos').addEventListener('change', function() {
+            var departamentoId = parseInt(this.value);
+            var municipiosFiltrados = municipios.filter(function(municipio) {
+                return municipio.departamentoId === departamentoId;
+            });
+
+            var municipiosSelect = document.getElementById('municipios');
+
+            municipiosSelect.innerHTML = '<option value="" selected disabled>-- Seleccione un Municipio --</option>';
+
+            municipiosFiltrados.forEach(function(municipio) {
+                var option = document.createElement('option');
+                option.value = municipio.id; 
+                option.textContent = municipio.nombre;
+                municipiosSelect.appendChild(option);
+            });
+
+            console.log(municipio.id); 
+        });
+
+
+
+    var fechaCreadoInput = document.getElementById('fecha_creado');
+    var fechaHoraActual = new Date();
+    var fechaHoraFormateada = fechaHoraActual.getFullYear() + '-' +
+        ('0' + (fechaHoraActual.getMonth() + 1)).slice(-2) + '-' +
+        ('0' + fechaHoraActual.getDate()).slice(-2) + 'T' +
+        ('0' + fechaHoraActual.getHours()).slice(-2) + ':' +
+        ('0' + fechaHoraActual.getMinutes()).slice(-2);
+    fechaCreadoInput.value = fechaHoraFormateada;
+
+function formatoTelefono(input) {
+    let valor = input.value.replace(/\D/g, '');
+
+    let formattedValue = '';
+    for (let i = 0; i < valor.length; i++) {
+        if (i === 4) {
+            formattedValue += '-';
+        }
+        formattedValue += valor.charAt(i);
+    }
+
+    input.value = formattedValue;
+}
+
+function formatoDUI(input) {
+    let valor = input.value.replace(/\D/g, '');
+
+    let formattedValue = '';
+    for (let i = 0; i < valor.length; i++) {
+        if (i === 8) {
+            formattedValue += '-';
+        }
+        formattedValue += valor.charAt(i);
+    }
+
+    input.value = formattedValue;
+}
+
+
+function formatoNIT(input) {
+    let valor = input.value;
+
+    valor = valor.replace(/\D/g, '');
+
+    let formattedValue = '';
+    for (let i = 0; i < valor.length; i++) {
+        if (i === 4 || i === 10 || i === 13) {
+            formattedValue += '-';
+        }
+        formattedValue += valor.charAt(i);
+    }
+
+    input.value = formattedValue;
+}
+
+
+function formatoNRC(input) {
+    let valor = input.value;
+
+    valor = valor.replace(/\D/g, '');
+
+    let formattedValue = '';
+    for (let i = 0; i < valor.length; i++) {
+        if (i === 6) {
+            formattedValue += '-';
+        }
+        formattedValue += valor.charAt(i);
+    }
+
+    input.value = formattedValue;
+}
+</script>
+{% endblock %}
+
+
+{% endblock %}

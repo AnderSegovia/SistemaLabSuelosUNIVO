@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista Proyectos{% endblock %}
+
+{% block body %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+
+</style>
+<body>
+
+<div id="#" style="margin-bottom: 100px;">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Proyectos</h1>
+        <div>
+            <input id="myInput" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead >
+                <tr>
+                    <th>#</th>
+                    <th>Codigo</th>
+                    <th>Nombre</th>
+                    <th>Cliente</th>
+                    <th>Ubicación</th>
+                    <th>Creado</th>
+
+                </tr>
+            </thead>
+            <tbody id="miTabla">
+                {% for proyecto in proyectos |reverse %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{proyecto.codigo}}</td>
+                    <td>{{ proyecto.nombreProyecto }}</td>
+                    <td>{{ proyecto.fkCliente.nombreEmpresa }}</td>
+                    <td>{{ proyecto.ubicacionProyecto }}, {{ proyecto.fkMunicipio.nombreMunicipio }} , {{ proyecto.fkDepartamento.nombreDepartamento }} </td>
+                    <td>{{ proyecto.fechaCreado|date('Y-m-d H:i:s') }}</td>
+                    {% set fkRol = app.session.get('fk_rol') %}
+                {% if fkRol == 1 %}
+                    <td><a href="{{ path('upProyecto', {'id': proyecto.idProyecto}) }}" class="btn btn-warning">Editar</a></td>
+                    {% endif %}
+                <td> <a href="{{ path('AgregarMuestra', {'id': proyecto.idProyecto}) }}" class="btn btn-success">Muestra</a>
+                </td>
+                <td> 
+                <a href="{{ path('addEquipo', {'id': proyecto.idProyecto}) }}" class="btn btn-success">Equipo</a>
+                </td>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#miTabla tr").each(function() {
+      var text = $(this).text().toLowerCase();
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script> 
+  
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Agregar Proyecto{% endblock %}
+
+{% block body %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ asset('assets/css/stylesForm.css') }}">
+{% endblock %}
+
+<h1>Agregar Proyecto</h1>
+
+<div class="form-container">
+    <form action="{{ path('addProyecto') }}" method="post">
+
+        <div class="form-group">
+            <label for="nombre_proyecto">Nombre del Proyecto:</label>
+            <input type="text" class="form-control" id="nombre_proyecto" name="nombre_proyecto" required>
+        </div>
+
+        <div class="form-group">
+            <label for="ubicacion_proyecto">Ubicación del Proyecto:</label>
+            <input type="text" class="form-control" id="ubicacion_proyecto" name="ubicacion_proyecto" required>
+        </div>
+            <div class="form-group">
+                <label for="departamentos">Departamento:</label>
+                <select class="form-control" id="departamentos" name="departamentos" required>
+                    <option value="" selected disabled>-- Seleccione un Departamento --</option>
+                    {% for depa in departamentos %}
+                        <option value="{{ depa.idDepartamento }}">{{ depa.nombreDepartamento }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="municipios">Municipio:</label>
+                    <select class="form-control" id="municipios" name="municipios" required>
+                    </select>
+            </div>
+        <div class="form-group">
+            <label for="fecha_creado">Fecha de Creación:</label>
+            <input type="datetime-local" class="form-control" id="fecha_creado" name="fecha_creado" required readonly>
+        </div>
+
+        <input type="hidden" id="fk_cliente" name="fk_cliente" value="{{ idEmpresa }}">
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+</div>
+   {% block javascripts %}
+<script>
+    var municipios = [
+        {% for municipio in municipios %}
+            {
+                id: {{ municipio.idMunicipio }},
+                nombre: '{{ municipio.nombreMunicipio }}',
+                departamentoId: {{ municipio.fkDepartamento.idDepartamento }}
+            },
+        {% endfor %}
+    ];
+
+        document.getElementById('departamentos').addEventListener('change', function() {
+            var departamentoId = parseInt(this.value);
+            var municipiosFiltrados = municipios.filter(function(municipio) {
+                return municipio.departamentoId === departamentoId;
+            });
+
+            var municipiosSelect = document.getElementById('municipios');
+
+            municipiosSelect.innerHTML = '<option value="" selected disabled>-- Seleccione un Municipio --</option>';
+
+            municipiosFiltrados.forEach(function(municipio) {
+                var option = document.createElement('option');
+                option.value = municipio.id; 
+                option.textContent = municipio.nombre;
+                municipiosSelect.appendChild(option);
+            });
+
+            console.log(municipio.id); 
+        });
+
+
+
+    var fechaCreadoInput = document.getElementById('fecha_creado');
+    var fechaHoraActual = new Date();
+    var fechaHoraFormateada = fechaHoraActual.getFullYear() + '-' +
+        ('0' + (fechaHoraActual.getMonth() + 1)).slice(-2) + '-' +
+        ('0' + fechaHoraActual.getDate()).slice(-2) + 'T' +
+        ('0' + fechaHoraActual.getHours()).slice(-2) + ':' +
+        ('0' + fechaHoraActual.getMinutes()).slice(-2);
+    fechaCreadoInput.value = fechaHoraFormateada;
+</script>
+{% endblock %}
+{% endblock %}

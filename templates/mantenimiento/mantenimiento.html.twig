@@ -1,0 +1,517 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mantenimiento{% endblock %}
+
+{% block body %}
+<div id="container" style="margin-bottom: 100px;">
+    <h1>Mantenimiento</h1>
+
+    <div class="container">
+    <div class="row">
+        <!-- Botón y primera tabla -->
+        <div class="col-md-12 mb-3">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#tabla1" aria-expanded="false" aria-controls="tabla1">
+                Mostrar/Ocultar Lista de Tipos de Muestra
+            </button>
+            <div class="collapse" id="tabla1">
+                <div class="card card-body mt-3">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h3>Lista de Tipos de Muestra</h3>
+                        <div>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarTipoMuestra">Agregar</button>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead >
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre Tipo de Muestra</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set tiposMuestraTipo2 = [] %}
+                            {% set contador = 0 %}
+                            {% for tipoMuestra in tiposMuestra|reverse %}
+                                {% if tipoMuestra.fkestado.id != 2 %}
+                                    {% set contador = contador + 1 %}
+                                    <tr>
+                                        <td>{{ contador }}</td>
+                                        <td>{{ tipoMuestra.nombreTipoMuestra }}</td>
+                                        <td>{{ tipoMuestra.fkestado.nombreEstado }}</td>
+                                        <td>
+                                            <button class="btn btn-warning" onclick="cargarDatosTipoMuestra({{ tipoMuestra.idTipoMuestra }}, '{{ tipoMuestra.nombreTipoMuestra }}', '{{ tipoMuestra.fkestado.id }}')" data-bs-toggle="modal" data-bs-target="#modalEditarTipoMuestra">Editar</button>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    {% set tiposMuestraTipo2 = tiposMuestraTipo2|merge([tipoMuestra]) %}
+                                {% endif %}
+                            {% endfor %}
+                            {% for tipoMuestra in tiposMuestraTipo2 %}
+                                {% set contador = contador + 1 %}
+                                <tr>
+                                    <td>{{ contador }}</td>
+                                    <td>{{ tipoMuestra.nombreTipoMuestra }}</td>
+                                    <td>{{ tipoMuestra.fkestado.nombreEstado }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-warning" onclick="cargarDatosTipoMuestra({{ tipoMuestra.idTipoMuestra }}, '{{ tipoMuestra.nombreTipoMuestra }}', '{{ tipoMuestra.fkestado.id }}')" data-bs-toggle="modal" data-bs-target="#modalEditarTipoMuestra">Editar</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón y segunda tabla -->
+        <div class="col-md-12 mb-3">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#tabla2" aria-expanded="false" aria-controls="tabla2">
+                Mostrar/Ocultar Lista de Tipos de Ensayos
+            </button>
+            <div class="collapse" id="tabla2">
+                <div class="card card-body mt-3">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h3>Lista de Tipos de Ensayos</h3>
+                        <div>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarTipoEnsayo">Agregar</button>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead >
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre del Ensayo</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set ensayosTipo2 = [] %}
+                            {% set contador = 0 %}
+                            {% for ensayo in ensayos|reverse %}
+                                {% if ensayo.fkestado.id != 2 %}
+                                    {% set contador = contador + 1 %}
+                                    <tr>
+                                        <td>{{ contador }}</td>
+                                        <td>{{ ensayo.nombreEnsayo }}</td>
+                                        <td>{{ ensayo.fkestado.nombreEstado }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning" onclick="cargarDatosTipoEnsayo({{ ensayo.idEnsayo }}, '{{ ensayo.nombreEnsayo }}', '{{ ensayo.fkestado.id }}')" data-bs-toggle="modal" data-bs-target="#modalEditarTipoEnsayo">Editar</button>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    {% set ensayosTipo2 = ensayosTipo2|merge([ensayo]) %}
+                                {% endif %}
+                            {% endfor %}
+                            {% for ensayo in ensayosTipo2 %}
+                                {% set contador = contador + 1 %}
+                                <tr>
+                                    <td>{{ contador }}</td>
+                                    <td>{{ ensayo.nombreEnsayo }}</td>
+                                    <td>{{ ensayo.fkestado.nombreEstado }}</td>
+                                    <td>
+                                        <button  type="button" class="btn btn-warning" onclick="cargarDatosTipoEnsayo({{ ensayo.idEnsayo }}, '{{ ensayo.nombreEnsayo }}', '{{ ensayo.fkestado.id }}')" data-bs-toggle="modal" data-bs-target="#modalEditarTipoEnsayo">Editar</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón y tercera tabla -->
+        <div class="col-md-12 mb-3">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#tabla3" aria-expanded="false" aria-controls="tabla3">
+                Mostrar/Ocultar Lista de Tipos de Moldes
+            </button>
+            <div class="collapse" id="tabla3">
+                <div class="card card-body mt-3">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h3>Lista de Tipos de Moldes</h3>
+                        <div>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarTipoMolde">Agregar</button>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead >
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre del Molde</th>
+                                <th>Existencias</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set contador = 0 %}
+                            {% for molde in moldes|reverse %}
+                                {% set contador = contador + 1 %}
+                                <tr>
+                                    <td>{{ contador }}</td>
+                                    <td>{{ molde.nombreMolde }}</td>
+                                    <td>{{ molde.cantidadMolde }}</td>
+                                    <td>{{ molde.fkestado.nombreEstado }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-warning" onclick="cargarDatosTipoMolde({{ molde.idMolde }}, '{{ molde.nombreMolde }}', '{{ molde.cantidadMolde }}', '{{ molde.fkestado.id }}')" data-bs-toggle="modal" data-bs-target="#modalEditarTipoMolde">Editar</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón y cuarta tabla -->
+        <div class="col-md-12 mb-3">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#tabla4" aria-expanded="false" aria-controls="tabla4">
+                Mostrar/Ocultar Lista Plantillas
+            </button>
+            <div class="collapse" id="tabla4">
+                <div class="card card-body mt-3">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h3>Plantillas de Excel</h3>
+                        <div>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarPlantilla">Agregar</button>
+                        </div>
+                    </div>
+                     <table class="table">
+                        <thead >
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre Descriptivo</th>
+                                <th>Nombre del Archivo</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set contador = 0 %}
+                            {% for plantilla in plantillas|reverse %}
+                                {% set contador = contador + 1 %}
+                                <tr>
+                                    <td>{{ contador }}</td>
+                                    <td>{{ plantilla.nombre }}</td>
+                                    <td>{{ plantilla.ruta}}</td>
+                                    <td>{{ plantilla.fkestado.nombreEstado }}</td>
+                                    <td>
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditarPlantilla" onclick="cargarDatosPlantilla({{ plantilla.idLista }}, '{{ plantilla.nombre }}', '{{ plantilla.ruta }}', {{ plantilla.fkEstado.id }})">Editar</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Modal para agregar Tipo de Muestra -->
+    <div class="modal fade" id="modalAgregarTipoMuestra" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Agregar Tipo de Muestra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ path ('agregarTipoMuestra')}}" method="post">
+                        <div class="mb-3">
+                            <label for="nombreTipoMuestra" class="form-label">Nombre del Tipo de Muestra</label>
+                            <input type="text" class="form-control" id="nombreTipoMuestra" name="nombreTipoMuestra" required>
+                        </div>
+                    <div class="mb-3">
+                        <label for="estadoMuestraw" class="form-label">Estado del Ensayo</label>
+                        <select class="form-select" id="estadoMuestraw" name="estadoMuestraw" required>
+                            {% for estado in estados %}
+                                <option value="{{ estado.id }}">{{ estado.nombreEstado }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar Tipo de Ensayo -->
+    <div class="modal fade" id="modalAgregarTipoEnsayo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Agregar Tipo de Ensayo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ path ('agregarEnsayo')}}" method="post">
+                        <div class="mb-3">
+                            <label for="nombreEnsayo" class="form-label">Nombre del Ensayo</label>
+                            <input type="text" class="form-control" id="nombreEnsayo" name="nombreEnsayo" required>
+                        </div>
+                    <div class="mb-3">
+                        <label for="estadoEnsayow" class="form-label">Estado del Ensayo</label>
+                        <select class="form-select" id="estadoEnsayow" name="estadoEnsayow" required>
+                            {% for estado in estados %}
+                                <option value="{{ estado.id }}">{{ estado.nombreEstado }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar Tipo de Molde -->
+    <div class="modal fade" id="modalAgregarTipoMolde" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Agregar Tipo de Molde</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ path ('agregarMolde')}}" method="post">
+                        <div class="mb-3">
+                            <label for="nombreMolde" class="form-label">Nombre del Molde</label>
+                            <input type="text" class="form-control" id="nombreMolde" name="nombreMolde" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cantidadMolde" class="form-label">Nombre del Molde</label>
+                            <input type="number" class="form-control" id="cantidadMolde" name="cantidadMolde" required>
+                        </div>
+                    <div class="mb-3">
+                        <label for="estadoPlantilla" class="form-label">Estado del Molde</label>
+                        <select class="form-select" id="estadoPlantilla" name="estadoPlantilla" required>
+                            {% for estado in estados %}
+                                <option value="{{ estado.id }}">{{ estado.nombreEstado }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+ <!-- Modal para agregar una Plantilla -->
+   <div class="modal fade" id="modalAgregarPlantilla" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Plantilla</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ path('agregarPlantilla') }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="nombrePlantilla" class="form-label">Nombre Descriptivo</label>
+                        <input type="text" class="form-control" id="nombrePlantilla" name="nombrePlantilla" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nombreArchivo" class="form-label">Renombrar Archivo</label>
+                        <input type="text" class="form-control" id="nombreArchivo" name="nombreArchivo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="archivoPlantilla" class="form-label">Subir Archivo</label>
+                        <input type="file" class="form-control" id="archivoPlantilla" name="archivoPlantilla" accept=".xlsx" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estadoPlantilla" class="form-label">Estado del Plantilla</label>
+                        <select class="form-select" id="estadoPlantilla" name="estadoPlantilla" required>
+                            {% for estado in estados %}
+                                <option value="{{ estado.id }}">{{ estado.nombreEstado }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Agregar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para editar plantilla -->
+<div class="modal fade" id="modalEditarPlantilla" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Plantilla</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ path('editarPlantilla') }}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="editId" name="editId">
+                    <input type="hidden" id="currentFile" name="currentFile">
+                    <div class="mb-3">
+                        <label for="editNombrePlantilla" class="form-label">Nombre Descriptivo</label>
+                        <input type="text" class="form-control" id="editNombrePlantilla" name="editNombrePlantilla" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editNombreArchivo" class="form-label">Renombrar Archivo</label>
+                        <input type="text" class="form-control" id="editNombreArchivo" name="editNombreArchivo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editArchivoPlantilla" class="form-label">Subir Archivo</label>
+                        <input type="file" class="form-control" id="editArchivoPlantilla" name="editArchivoPlantilla" accept=".xlsx">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEstadoPlantilla" class="form-label">Estado de la Plantilla</label>
+                        <select class="form-select" id="editEstadoPlantilla" name="editEstadoPlantilla" required>
+                            {% for estado in estados %}
+                                <option value="{{ estado.id }}">{{ estado.nombreEstado }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Modal para editar Tipo de Muestra -->
+<div class="modal fade" id="modalEditarTipoMuestra" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Tipo de Muestra</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ path ('upTipoMuestra')}}" method="post">
+                    <input type="hidden" name="id" id="tipoMuestraId">
+                    <div class="mb-3">
+                        <label for="nombreTipoMuestra" class="form-label">Nombre del Tipo de Muestra</label>
+                        <input type="text" class="form-control" id="nombreTipoMuestraModal" name="nombreTipoMuestra" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estadoMuestra" class="form-label">Estado del Ensayo</label>
+                        <select class="form-select" id="estadoMuestra" name="estadoMuestra" required>
+                            {% for estado in estados %}
+                                <option value="{{ estado.id }}">{{ estado.nombreEstado }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal para editar Tipo de Ensayo -->
+<div class="modal fade" id="modalEditarTipoEnsayo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Tipo de Ensayo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ path ('upEnsayo')}}" method="post">
+                    <input type="hidden" name="id" id="ensayoId">
+                    <div class="mb-3">
+                        <label for="nombreEnsayo" class="form-label">Nombre del Ensayo</label>
+                        <input type="text" class="form-control" id="nombreEnsayoModal" name="nombreEnsayo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estadoEnsayo" class="form-label">Estado del Ensayo</label>
+                        <select class="form-select" id="estadoEnsayo" name="estadoEnsayo" required>
+                            {% for estado in estados %}
+                                <option value="{{ estado.id }}">{{ estado.nombreEstado }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para editar Tipo de Molde -->
+<div class="modal fade" id="modalEditarTipoMolde" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Tipo de Molde</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ path ('upMolde')}}" method="post">
+                    <input type="hidden" name="id" id="moldeId">
+                    <div class="mb-3">
+                        <label for="nombreMolde" class="form-label">Nombre del Ensayo</label>
+                        <input type="text" class="form-control" id="nombreMoldeModal" name="nombreMolde" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cantidadMolde" class="form-label">Cantidad</label>
+                        <input type="number" class="form-control" id="cantidadMoldeModal" name="cantidadMolde" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estadoEnsayo" class="form-label">Estado del Ensayo</label>
+                        <select class="form-select" id="estadoEnsayo" name="estadoEnsayo" required>
+                            {% for estado in estados %}
+                                <option value="{{ estado.id }}">{{ estado.nombreEstado }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+    {% block javascripts %}
+    <script>
+    
+        function cargarDatosTipoMuestra(id, nombre, estadoId) {
+            document.getElementById('tipoMuestraId').value = id;
+            document.getElementById('nombreTipoMuestraModal').value = nombre;
+            document.getElementById('estadoMuestra').value = estadoId;
+        }
+
+    function cargarDatosTipoEnsayo(id, nombre, estadoId) {
+        document.getElementById('ensayoId').value = id;
+        document.getElementById('nombreEnsayoModal').value = nombre;
+        document.getElementById('estadoEnsayo').value = estadoId;
+    }
+    
+    function cargarDatosTipoMolde(id, nombre, cantidad, estadoId) {
+        document.getElementById('moldeId').value = id;
+        document.getElementById('nombreMoldeModal').value = nombre;
+        document.getElementById('cantidadMoldeModal').value = cantidad;
+        document.getElementById('estadoMolde').value = estadoId;
+    }
+function cargarDatosPlantilla(id, nombre, ruta, estadoId) {
+    var nombreSinExtension = ruta.split('-').slice(0, -1).join('-');
+    
+    document.getElementById('editId').value = id;
+    document.getElementById('editNombrePlantilla').value = nombre;
+    document.getElementById('editNombreArchivo').value = nombreSinExtension;
+    document.getElementById('editEstadoPlantilla').value = estadoId;
+    document.getElementById('currentFile').value = ruta; 
+}
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+        const nombreArchivoInput = document.getElementById('nombreArchivo');
+
+        nombreArchivoInput.addEventListener('input', function () {
+            this.value = this.value.replace(/\s/g, '');
+        });
+    });
+    </script>
+    {% endblock %}
+
+
+{% endblock %}

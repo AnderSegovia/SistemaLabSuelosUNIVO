@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Agregar Usuario{% endblock %}
+{% block body %}
+
+    {% block styles %}
+<link rel="stylesheet" href="{{ asset('assets  /css/stylesForm.css') }}">
+    {% endblock %}
+        <h1>Agregar Usuario</h1>
+
+    <div class="form-container">
+  <form action="{{ path('addUsuarios') }}" method="post">
+
+        <div class="form-group">
+            <label for="codigo_usuario">Código de Usuario:</label>
+            <input type="text" class="form-control" id="codigo_usuario" name="codigo_usuario" required>
+        </div>
+
+    <div class="form-group">
+        <label for="nombre_usuario">Nombre de Usuario:</label>
+        <input type="text" class="form-control" id="nombre_usuario" name="nombre_usuario" required>
+    </div>
+<div class="form-group">
+    <label for="numero_dui">Número de DUI:</label>
+    <input type="text" class="form-control" id="numero_dui" name="numero_dui" required maxlength="10" oninput="formatoDUI(this)">
+</div>
+
+<div class="form-group">
+    <label for="edad">Edad:</label>
+    <input type="number" class="form-control" id="edad" name="edad" required min="15" max="99" oninput="validarEdad(this)">
+</div>
+    <div class="form-group">
+        <label for="telefono">Teléfono:</label>
+        <input type="text" class="form-control" id="telefono" name="telefono" required maxlength="9" inputmode="numeric" oninput="formatoTelefono(this)">
+    </div>
+    <div class="form-group">
+        <label for="fecha_creado">Fecha de Creación:</label>
+        <input type="datetime-local" class="form-control" id="fecha_creado" name="fecha_creado" required readonly>
+    </div>
+    <div class="form-group">
+        <label for="contra_usuario">Contraseña de Usuario:</label>
+        <input type="password" class="form-control" id="contra_usuario" name="contra_usuario" required>
+    </div>
+
+    <div class="form-group">
+        <label for="fk_rol">Rol:</label>
+        <select class="form-control" id="fk_rol" name="fk_rol" required>
+            <option value="" selected disabled>-- Seleccione un Rol --</option>
+            {% for nombreRol in roles %}
+                <option value="{{ nombreRol.idRol }}">{{ nombreRol.nombreRol }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
+    </div>
+<script>
+
+
+    var fechaCreadoInput = document.getElementById('fecha_creado');
+    
+    var fechaHoraActual = new Date();
+        var fechaHoraFormateada = fechaHoraActual.getFullYear() + '-' +
+        ('0' + (fechaHoraActual.getMonth() + 1)).slice(-2) + '-' +
+        ('0' + fechaHoraActual.getDate()).slice(-2) + 'T' +
+        ('0' + fechaHoraActual.getHours()).slice(-2) + ':' +
+        ('0' + fechaHoraActual.getMinutes()).slice(-2);
+    
+    fechaCreadoInput.value = fechaHoraFormateada;
+
+    function addHyphen(element) {
+    var contact = element.value;
+    if (contact.length === 4 && contact.indexOf('-') === -1) {
+        element.value = contact.slice(0, 4) + '-' + contact.slice(4);
+        }
+    }
+
+
+function formatoDUI(input) {
+    let valor = input.value;
+
+    valor = valor.replace(/-/g, '');
+
+    if (valor.length > 8) {
+        valor = valor.slice(0, 8) + '-' + valor.slice(8);
+    }
+
+    input.value = valor;
+}
+function validarEdad(input) {
+    let valor = input.value;
+    let edad = parseInt(valor);
+    if (valor.length > 2) {
+        input.value = valor.slice(0, 2);
+    }
+}
+
+function formatoTelefono(input) {
+    let valor = input.value.replace(/\D/g, '');
+
+    let formattedValue = '';
+    for (let i = 0; i < valor.length; i++) {
+        if (i === 4) {
+            formattedValue += '-';
+        }
+        formattedValue += valor.charAt(i);
+    }
+
+    input.value = formattedValue;
+}
+</script>
+
+
+
+{% endblock %}

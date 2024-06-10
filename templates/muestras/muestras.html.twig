@@ -1,0 +1,225 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista Muestras{% endblock %}
+
+{% block body %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<div id="container" style="margin-bottom: 100px;">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Muestras</h1>
+        <div>
+            <form action="" method="" class="form-inline my-2 my-lg-0">
+                <input id="myInput" class="form-control me-2" type="text" placeholder="Buscar" aria-label="Buscar">
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <tbody id="miTabla">
+                {% for material in materiales|reverse %}
+                    <thead >
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Proyecto</th>
+                            <th>Entrega</th>
+                            <th>Cargo</th>
+                            <th>Contacto</th>
+                            <th>Observaciones</th>
+                            <th>Recibe</th>
+            {% set fkRol = app.session.get('fk_rol') %}
+            {% if fkRol == 1 %}
+                            <th><a href="{{ path('detalle', {'id': material.idMaterial}) }}" class="btn btn-warning">Editar</a></th>
+            {% endif %}
+                            
+<th>
+<div class="container mt-3">
+  <div class="btn-group">
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">Descargar Archivo..</button>
+      <ul class="dropdown-menu">
+                {% for archivo in archivos %}
+                    <li>
+                            <a class="dropdown-item" href="{{ path('descargarArchivos', { 'id': material.idMaterial, 'opcion': archivo.idLista  }) }}">->{{archivo.Nombre}}</a>
+                    </li>
+                {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+</th>
+
+
+<th>
+<div class="container mt-3">
+  <div class="btn-group">
+    <input type="hidden" id="id_muestra_{{ material.idMaterial }}" value="{{ material.idMaterial }}">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">Subir Archivo...</button>
+    <ul class="dropdown-menu">
+      {% for archivo in archivos %}
+      <li>
+        <label for="archivo_{{  material.idMaterial }}_{{ archivo.idLista }}" class="btn" style="cursor: pointer; width: 400px;">->{{ archivo.Nombre }}</label>
+        <input type="file" id="archivo_{{ material.idMaterial }}_{{ archivo.idLista }}" name="archivo_modificado" accept=".xlsx, .xls" style="display: none;" onchange="subirArchivos({{ material.idMaterial }}, {{ archivo.idLista }})">
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+</th>
+
+<th>
+    <div class="container mt-3">
+        <div class="btn-group">
+            <div class="btn-group">
+                <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">Historial...</button>
+                <ul class="dropdown-menu">
+                    {% for archivo in archivos %}
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ material.idMaterial }}-{{ archivo.idLista }}">->{{ archivo.Nombre }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</th>
+                        </tr>
+                        
+                    </thead>
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ material.fkProyecto.fkCliente.nombreEmpresa }}</td>
+                        <td>{{ material.fkProyecto.nombreProyecto }}</td>
+                        <td>{{ material.atencion }}</td>
+                        <td>{{ material.cargo }}</td>
+                        <td>{{ material.contacto }}</td>
+                        <td>{{ material.observaciones }}</td>
+                        <td>{{ material.fkTecnico.nombreUsuario }}</td>
+                        <td colspan="5">
+<table class="table table-bordered">
+    <thead >
+        <tr>
+            <th>Tipo de Muestra</th>
+            <th>Cantidad</th>
+            <th>Fecha Elaboración</th>
+            <th>Procedencia o Caracteristicas</th>
+            <th>Ensayo a realizar</th>
+
+        </tr>
+    </thead>
+    <tbody id="miTabla" >
+        {% for muestra in muestras %}
+            {% if muestra.fkMateriales.idMaterial == material.idMaterial %}
+                <tr >
+                    <td>{{ muestra.tipoMuestra.nombreTipoMuestra }}</td>
+                    <td>{{ muestra.cantidad }}</td>
+                    <td>{{ muestra.fechaElaboracion|date('Y-m-d') }}</td>
+                    <td>{{ muestra.procedencia }}</td>
+                    <td>{{ muestra.ensayo.nombreEnsayo }}</td>
+
+
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+                        </td>
+                    </tr>
+{% for archivo in archivos %}
+    <div class="modal fade" id="exampleModal{{ material.idMaterial }}-{{ archivo.idLista }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ material.idMaterial }}-{{ archivo.idLista }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel{{ material.idMaterial }}-{{ archivo.idLista }}">Detalles de  - {{ archivo.Nombre }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cerrarModal('{{ material.idMaterial }}-{{ archivo.idLista }}')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalBody{{ material.idMaterial }}-{{ archivo.idLista }}">
+                    {% for histo in historial|reverse %}
+                        {% if histo.fkLista.idLista == archivo.idLista %}
+                        {% if histo.fkMaterial.idMaterial == material.idMaterial %}
+
+                            <p><strong>Archivo: </strong> <a class="" href="{{ path('descargarTodosArchivos', { 'id': histo.archivoNuevo }) }}">{{ histo.archivoNuevo }} </a></p>
+                            <p><strong>Fecha: </strong> {{ histo.fecha|date('Y-m-d H:i:s') }}</p>
+                            <p>------------------------------------------------------------------</p>
+                        {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cerrarModal('{{ material.idMaterial }}-{{ archivo.idLista }}')">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>        
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#miTabla tr").each(function() {
+      var text = $(this).text().toLowerCase();
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+    function cerrarModal(id) {
+        $('#exampleModal' + id).modal('hide');
+    }
+</script>
+
+<script>
+function subirArchivos(idMuestra, archivoId) {
+    var archivoInputId = 'archivo_' + idMuestra + '_' + archivoId ;
+    var archivoInput = document.getElementById(archivoInputId);
+    var archivo = archivoInput.files[0];
+    var idInput = document.getElementById('id_muestra_' + idMuestra).value;
+
+    console.log('idMuestra:', idMuestra, 'archivoId:', archivoId, 'archivoInputId:', archivoInputId);
+    console.log('archivo:', archivo, 'idInput:', idInput);
+
+    if (archivo && idInput) {
+        var formData = new FormData();
+        formData.append('archivo_modificado', archivo);
+        formData.append('id_muestra', idMuestra);
+        formData.append('archivo_id', archivoId);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{{ path('subirArchivos') }}', true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                alert('El archivo se ha subido correctamente');
+                window.location.reload();
+            } else {
+                alert('Ha ocurrido un error al subir el archivo');
+            }
+        };
+        xhr.onerror = function() {
+            alert('Ha ocurrido un error al subir el archivo');
+        };
+        xhr.send(formData);
+    } else {
+        console.error('Archivo o ID de muestra no encontrados.');
+    }
+}
+
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#miTabla tr").each(function () {
+                var text = $(this).text().toLowerCase();
+                $(this).toggle(text.indexOf(value) > -1);
+            });
+        });
+    });
+</script>
+{% endblock %}
